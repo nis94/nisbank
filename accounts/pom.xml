@@ -8,11 +8,11 @@
 		<version>3.2.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.eazybytes</groupId>
-	<artifactId>accounts</artifactId>
+	<groupId>com.nisbank</groupId>
+	<artifactId>account</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>accounts</name>
+	<name>account</name>
 	<description>Microservice for Accounts</description>
 	<properties>
 		<java.version>17</java.version>
@@ -91,7 +91,7 @@
 				<version>3.4.1</version>
 				<configuration>
 					<to>
-						<image>eazybytes/${project.artifactId}:s6</image>
+						<image>nisbank/${project.artifactId}:v1</image>
 					</to>
 				</configuration>
 			</plugin>
