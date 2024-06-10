@@ -9,6 +9,7 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "customers")
 public class Customer extends BaseEntity {
 
     @Id
