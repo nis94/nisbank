@@ -11,7 +11,7 @@ spring:
           # search-locations: "classpath:/config"
           # search-locations: "file:///Users//eazybytes//Documents//config"
         git:
-          uri: "https://github.com/eazybytes/eazybytes-config.git"
+          uri: "https://github.com/nis94/nisbank-config.git"
           default-label: main
           timeout: 5
           clone-on-start: true
@@ -38,7 +38,7 @@ management:
         enabled: true
 
 encrypt:
-  key: "45D81EC1EF61DF9AD8D3E5BB397F9"
+  key: "45D18EC1EF61FD9AD8D3E5BB937F9"
 
 server:
   port: 8071
