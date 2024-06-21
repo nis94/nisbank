@@ -9,7 +9,7 @@ spring:
       server:
         # native:
           # search-locations: "classpath:/config"
-          # search-locations: "file:///Users//eazybytes//Documents//config"
+          # search-locations: "file:///Users//nisbank//Documents//config"
         git:
           uri: "https://github.com/nis94/nisbank-config.git"
           default-label: main
