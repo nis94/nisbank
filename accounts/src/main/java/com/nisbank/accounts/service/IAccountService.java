@@ -2,7 +2,7 @@ package com.nisbank.accounts.service;
 
 import com.nisbank.accounts.dto.CustomerDto;
 
-public interface IAccountsService {
+public interface IAccountService {
 
     /**
      *
