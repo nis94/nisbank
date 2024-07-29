@@ -7,11 +7,11 @@ import com.nisbank.accounts.entity.Account;
 import com.nisbank.accounts.entity.Customer;
 import com.nisbank.accounts.exception.CustomerAlreadyExistsException;
 import com.nisbank.accounts.exception.ResourceNotFoundException;
-import com.nisbank.accounts.mapper.AccountsMapper;
+import com.nisbank.accounts.mapper.AccountMapper;
 import com.nisbank.accounts.mapper.CustomerMapper;
 import com.nisbank.accounts.repository.AccountsRepository;
 import com.nisbank.accounts.repository.CustomersRepository;
-import com.nisbank.accounts.service.IAccountsService;
+import com.nisbank.accounts.service.IAccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import java.util.Random;
 
 @Service
 @AllArgsConstructor
-public class AccountsServiceImpl  implements IAccountsService {
+public class AccountServiceImpl implements IAccountService {
 
     private AccountsRepository accountsRepository;
     private CustomersRepository customersRepository;
@@ -68,7 +68,7 @@ public class AccountsServiceImpl  implements IAccountsService {
                 () -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString())
         );
         CustomerDto customerDto = CustomerMapper.mapToCustomerDto(customer, new CustomerDto());
-        customerDto.setAccountDto(AccountsMapper.mapToAccountsDto(account, new AccountDto()));
+        customerDto.setAccountDto(AccountMapper.mapToAccountsDto(account, new AccountDto()));
         return customerDto;
     }
 
@@ -84,7 +84,7 @@ public class AccountsServiceImpl  implements IAccountsService {
             Account account = accountsRepository.findById(accountDto.getAccountNumber()).orElseThrow(
                     () -> new ResourceNotFoundException("Account", "AccountNumber", accountDto.getAccountNumber().toString())
             );
-            AccountsMapper.mapToAccounts(accountDto, account);
+            AccountMapper.mapToAccounts(accountDto, account);
             account = accountsRepository.save(account);
 
             Long customerId = account.getCustomerId();

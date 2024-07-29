@@ -5,7 +5,7 @@ import com.nisbank.accounts.dto.AccountContactInfoDto;
 import com.nisbank.accounts.dto.CustomerDto;
 import com.nisbank.accounts.dto.ErrorResponseDto;
 import com.nisbank.accounts.dto.ResponseDto;
-import com.nisbank.accounts.service.IAccountsService;
+import com.nisbank.accounts.service.IAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,12 +36,12 @@ import static com.nisbank.accounts.constants.AccountsConstants.*;
 @RestController
 @RequestMapping(path="/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Validated
-public class AccountsController {
+public class AccountController {
 
-    private final IAccountsService iAccountsService;
+    private final IAccountService iAccountService;
 
-    public AccountsController(IAccountsService iAccountsService) {
-        this.iAccountsService = iAccountsService;
+    public AccountController(IAccountService iAccountService) {
+        this.iAccountService = iAccountService;
     }
 
     @Value("${build.version}")
@@ -73,7 +73,7 @@ public class AccountsController {
     )
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> createAccount(@Valid @RequestBody CustomerDto customerDto) {
-        iAccountsService.createAccount(customerDto);
+        iAccountService.createAccount(customerDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDto(STATUS_201, AccountsConstants.MESSAGE_201));
@@ -101,7 +101,7 @@ public class AccountsController {
     public ResponseEntity<CustomerDto> fetchAccountDetails(@RequestParam
                                                                @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                                String mobileNumber) {
-        CustomerDto customerDto = iAccountsService.fetchAccount(mobileNumber);
+        CustomerDto customerDto = iAccountService.fetchAccount(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(customerDto);
     }
 
@@ -129,7 +129,7 @@ public class AccountsController {
     )
     @PutMapping("/update")
     public ResponseEntity<ResponseDto> updateAccountDetails(@Valid @RequestBody CustomerDto customerDto) {
-        boolean isUpdated = iAccountsService.updateAccount(customerDto);
+        boolean isUpdated = iAccountService.updateAccount(customerDto);
         if(isUpdated) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -167,7 +167,7 @@ public class AccountsController {
     public ResponseEntity<ResponseDto> deleteAccountDetails(@RequestParam
                                                                 @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                                 String mobileNumber) {
-        boolean isDeleted = iAccountsService.deleteAccount(mobileNumber);
+        boolean isDeleted = iAccountService.deleteAccount(mobileNumber);
         if(isDeleted) {
             return ResponseEntity
                     .status(HttpStatus.OK)
