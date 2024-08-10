@@ -1,7 +1,6 @@
 package com.nisbank.accounts.controller;
 
 import com.nisbank.accounts.dto.CustomerDetailsDto;
-import com.nisbank.accounts.dto.CustomerDto;
 import com.nisbank.accounts.dto.ErrorResponseDto;
 import com.nisbank.accounts.service.ICustomerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import static com.nisbank.accounts.constants.AccountsConstants.*;
 @Validated
 public class CustomerController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
     private final ICustomerService iCustomersService;
 
     public CustomerController(ICustomerService iCustomersService) {
@@ -57,12 +59,19 @@ public class CustomerController {
     }
     )
     @GetMapping("/fetchCustomerDetails")
-    public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails(@RequestParam
-                                                               @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
-                                                               String mobileNumber) {
-        CustomerDetailsDto customerDetailsDto = iCustomersService.fetchCustomerDetails(mobileNumber);
+    public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails(
+            @RequestHeader(name = "X-Correlation-ID")
+            String correlationId,
+            @RequestParam
+            @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
+            String mobileNumber) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(customerDetailsDto);
+        logger.debug("Correlation ID: {}", correlationId);
+        CustomerDetailsDto customerDetailsDto = iCustomersService.fetchCustomerDetails(mobileNumber, correlationId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(customerDetailsDto);
     }
 
 }

@@ -1,5 +1,6 @@
 server:
   port: 8090
+
 spring:
   application:
     name: "loans"
@@ -27,6 +28,17 @@ management:
     web:
       exposure:
         include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
   info:
     env:
       enabled: true
@@ -49,3 +61,9 @@ info:
     name: "loans"
     description: "Loans Microservice"
     version: "1.0"
+
+logging:
+  level:
+    com:
+      nisbank:
+        loans: DEBUG
