@@ -1,5 +1,6 @@
 server:
   port: 8080
+
 spring:
   application:
     name: "accounts"
@@ -27,6 +28,17 @@ management:
     web:
       exposure:
         include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
   info:
     env:
       enabled: true
@@ -50,3 +62,8 @@ info:
     description: "Accounts Microservice"
     version: "1.0"
 
+logging:
+  level:
+    com:
+      nisbank:
+        accounts: DEBUG

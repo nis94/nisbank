@@ -1,5 +1,6 @@
 server:
   port: 9000
+
 spring:
   application:
     name: "cards"
@@ -27,6 +28,17 @@ management:
     web:
       exposure:
         include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
   info:
     env:
       enabled: true
@@ -49,3 +61,9 @@ info:
     name: "cards"
     description: "Cards Microservice"
     version: "1.0"
+
+logging:
+  level:
+    com:
+      nisbank:
+        cards: DEBUG
