@@ -16,12 +16,16 @@ public class GatewayServerApplication {
 	}
 
 	@Bean
-	public RouteLocator nisbankRouteConfig(RouteLocatorBuilder routeLocatorBuilder) {
+	public RouteLocator nisBankRouteConfig(RouteLocatorBuilder routeLocatorBuilder) {
 		return routeLocatorBuilder.routes()
 						.route(p -> p
 								.path("/nisbank/accounts/**")
 								.filters( f -> f.rewritePath("/nisbank/accounts/(?<segment>.*)","/${segment}")
-										.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+										.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+										.circuitBreaker(config -> config.setName("accountsCircuitBreaker")
+												.setFallbackUri("forward:/contactSupport")
+										)
+								)
 								.uri("lb://ACCOUNTS"))
 					.route(p -> p
 							.path("/nisbank/loans/**")
