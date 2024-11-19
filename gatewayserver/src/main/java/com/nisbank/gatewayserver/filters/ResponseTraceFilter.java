@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Mono;
 
-import static com.nisbank.gatewayserver.filters.FilterUtility.CORRELATION_ID;
 
 @Configuration
 public class ResponseTraceFilter {
