@@ -11,9 +11,9 @@ import com.nisbank.accounts.mapper.AccountMapper;
 import com.nisbank.accounts.mapper.CustomerMapper;
 import com.nisbank.accounts.repository.AccountsRepository;
 import com.nisbank.accounts.repository.CustomersRepository;
-import com.nisbank.accounts.service.CardsFeignClient;
+import com.nisbank.accounts.service.client.CardsFeignClient;
 import com.nisbank.accounts.service.ICustomerService;
-import com.nisbank.accounts.service.LoansFeignClient;
+import com.nisbank.accounts.service.client.LoansFeignClient;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -40,10 +40,14 @@ public class CustomerServiceImpl implements ICustomerService {
         customerDetailsDto.setAccountDto(AccountMapper.mapToAccountsDto(account, new AccountDto()));
 
         ResponseEntity<LoansDto> loansDtoResponseEntity = loansFeignClient.fetchLoanDetails(correlationId, mobileNumber);
-        customerDetailsDto.setLoansDto(loansDtoResponseEntity.getBody());
+        if(loansDtoResponseEntity != null) { // Fallback returns null TODO: Add logic instead
+            customerDetailsDto.setLoansDto(loansDtoResponseEntity.getBody());
+        }
 
         ResponseEntity<CardsDto> cardsDtoResponseEntity = cardsFeignClient.fetchCardDetails(correlationId, mobileNumber);
-        customerDetailsDto.setCardsDto(cardsDtoResponseEntity.getBody());
+        if(cardsDtoResponseEntity != null) { // Fallback returns null TODO: Add logic instead
+            customerDetailsDto.setCardsDto(cardsDtoResponseEntity.getBody());
+        }
 
         return customerDetailsDto;
     }

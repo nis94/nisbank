@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Mono;
 
-import static com.nisbank.gatewayserver.filters.FilterUtility.CORRELATION_ID;
 
 @Configuration
 public class ResponseTraceFilter {
@@ -21,13 +20,15 @@ public class ResponseTraceFilter {
 
     @Bean
     public GlobalFilter postGlobalFilter() {
-        return (exchange, chain) -> {
-            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+        return (exchange, chain) ->
+            chain.filter(exchange).then(Mono.fromRunnable(() -> {
                 HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
                 String correlationId = filterUtility.getCorrelationId(requestHeaders);
-                logger.debug("Updated the correlation id to the outbound headers: {}", correlationId);
-                exchange.getResponse().getHeaders().add(CORRELATION_ID, correlationId);
+
+                if(!(exchange.getResponse().getHeaders().containsKey(filterUtility.CORRELATION_ID))) {
+                    logger.debug("Updated the correlation id to the outbound headers: {}", correlationId);
+                    exchange.getResponse().getHeaders().add(filterUtility.CORRELATION_ID, correlationId);
+                }
             }));
-        };
     }
 }
