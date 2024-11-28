@@ -31,4 +31,11 @@ public interface IAccountService {
      */
     boolean deleteAccount(String mobileNumber);
 
+    /**
+     *
+     * @param accountNumber - Long
+     * @return boolean indicating if the update of notification status is successful or not
+     */
+    boolean updateNotificationStatus(Long accountNumber);
+
 }
