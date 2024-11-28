@@ -25,7 +25,7 @@ public class Account extends  BaseEntity {
     @Column(name="branch_address")
     private String branchAddress;
 
-    @Column(name = "is_activated")
+    @Column(name = "is_notified")
     private Boolean isNotified;
 
 }

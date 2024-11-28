@@ -313,6 +313,18 @@ services:
       file: common-config.yml
       service: microservice-configserver-config
 
+  message:
+    image: "eazybytes/message:v1"
+    container_name: message-ms
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   gatewayserver:
     image: "nir94/gatewayserver:v1"
     container_name: gatewayserver-ms
@@ -356,10 +368,13 @@ services:
         condition: service_healthy
       accountsdb:
         condition: service_healthy
+      rabbit:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "accounts"
       OTEL_SERVICE_NAME: "accounts"
       SPRING_DATASOURCE_URL: jdbc:mysql://accountsdb:3306/accountsdb
+      SPRING_RABBITMQ_HOST: "rabbit"
     extends:
       file: common-config.yml
       service: microservice-eurekaserver-config
