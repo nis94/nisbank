@@ -2,6 +2,7 @@ package com.nisbank.accounts.service.impl;
 
 import com.nisbank.accounts.constants.AccountsConstants;
 import com.nisbank.accounts.dto.AccountDto;
+import com.nisbank.accounts.dto.AccountMsgDto;
 import com.nisbank.accounts.dto.CustomerDto;
 import com.nisbank.accounts.entity.Account;
 import com.nisbank.accounts.entity.Customer;
@@ -13,6 +14,9 @@ import com.nisbank.accounts.repository.AccountsRepository;
 import com.nisbank.accounts.repository.CustomersRepository;
 import com.nisbank.accounts.service.IAccountService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -22,8 +26,11 @@ import java.util.Random;
 @AllArgsConstructor
 public class AccountServiceImpl implements IAccountService {
 
+    private static final Logger log = LoggerFactory.getLogger(AccountServiceImpl.class);
+
     private AccountsRepository accountsRepository;
     private CustomersRepository customersRepository;
+    private final StreamBridge streamBridge;
 
     /**
      * @param customerDto - CustomerDto Object
@@ -37,7 +44,17 @@ public class AccountServiceImpl implements IAccountService {
                     +customerDto.getMobileNumber());
         }
         Customer savedCustomer = customersRepository.save(customer);
-        accountsRepository.save(createNewAccount(savedCustomer));
+        Account savedAccount = accountsRepository.save(createNewAccount(savedCustomer));
+        sendNotification(savedAccount, savedCustomer);
+    }
+
+    private void sendNotification(Account account, Customer customer) {
+        var accountMsgDto = new AccountMsgDto(
+                account.getAccountNumber(), customer.getName(), customer.getEmail(), customer.getMobileNumber()
+        );
+        log.info("Sending Notification request for the details: {}", accountMsgDto);
+        var result = streamBridge.send("sendNotification-out-0", accountMsgDto);
+        log.info("Is the Notification request successfully triggered ? : {}", result);
     }
 
     /**
@@ -110,6 +127,24 @@ public class AccountServiceImpl implements IAccountService {
         accountsRepository.deleteByCustomerId(customer.getCustomerId());
         customersRepository.deleteById(customer.getCustomerId());
         return true;
+    }
+
+    /**
+     * @param accountNumber - Long
+     * @return boolean indicating if the update of Notification status is successful or not
+     */
+    @Override
+    public boolean updateNotificationStatus(Long accountNumber) {
+        boolean isUpdated = false;
+        if(accountNumber !=null ){
+            Account account = accountsRepository.findById(accountNumber).orElseThrow(
+                    () -> new ResourceNotFoundException("Account", "AccountNumber", accountNumber.toString())
+            );
+            account.setIsNotified(true);
+            accountsRepository.save(account);
+            isUpdated = true;
+        }
+        return  isUpdated;
     }
 
 }

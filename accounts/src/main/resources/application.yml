@@ -22,10 +22,20 @@ spring:
     port: 5672
     username: "guest"
     password: "guest"
+    connection-timeout: 10s
   cloud:
     openfeign:
       circuitbreaker:
         enabled: true
+    function:
+        definition: updateNotification
+    stream:
+      bindings:
+        updateNotification-in-0:
+          destination: notification-sent
+          group: ${spring.application.name}
+        sendNotification-out-0:
+          destination: send-notification
 
 management:
   endpoints:

@@ -140,8 +140,3 @@
 | "helm uninstall [NAME]" | Uninstall all of the resources associated with a given release |
 | "helm template [NAME] [CHART]" | Render chart templates locally along with the values |
 | "helm list" | Lists all of the helm releases inside a K8s cluster |
-
-
-## Dockers for Local Testing
-- docker run -d --hostname my-rabbit --name nir-rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3-management
-- docker run -p 6379:6379 --name nir-redis -d redis
