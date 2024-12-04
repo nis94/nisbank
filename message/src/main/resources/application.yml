@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: "message"
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 10s
   cloud:
     function:
       definition: email|sms
@@ -14,9 +20,7 @@ spring:
           group: ${spring.application.name}
         emailsms-out-0:
           destination: notification-sent
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    connection-timeout: 10s
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092

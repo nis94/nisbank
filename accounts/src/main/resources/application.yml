@@ -30,12 +30,17 @@ spring:
     function:
         definition: updateNotification
     stream:
+      defaultBinder: kafka
       bindings:
         updateNotification-in-0:
           destination: notification-sent
           group: ${spring.application.name}
         sendNotification-out-0:
           destination: send-notification
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
 
 management:
   endpoints:
