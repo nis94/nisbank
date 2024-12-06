@@ -1,4 +1,17 @@
 services:
+  kafka:
+    image: 'bitnami/kafka:latest'
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.1
     container_name: keycloak
@@ -314,13 +327,14 @@ services:
       service: microservice-configserver-config
 
   message:
-    image: "eazybytes/message:v1"
+    image: "nir94/message:v1"
     container_name: message-ms
     depends_on:
       rabbit:
         condition: service_healthy
     environment:
       SPRING_RABBITMQ_HOST: "rabbit"
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
       service: network-deploy-service
@@ -373,7 +387,7 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "accounts"
       OTEL_SERVICE_NAME: "accounts"
-      SPRING_DATASOURCE_URL: jdbc:mysql://accountsdb:3306/accountsdb
+      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
       SPRING_RABBITMQ_HOST: "rabbit"
     extends:
       file: common-config.yml
@@ -428,6 +442,10 @@ services:
     extends:
       file: common-config.yml
       service: microservice-eurekaserver-config
+
+volumes:
+  kafka_data:
+    driver: local
 
 networks:
   nisbank:
