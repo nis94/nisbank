@@ -1,0 +1,26 @@
+server:
+  port: 9010
+
+spring:
+  application:
+    name: "message"
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 10s
+  cloud:
+    function:
+      definition: email|sms
+    stream:
+      bindings:
+        emailsms-in-0:
+          destination: send-notification
+          group: ${spring.application.name}
+        emailsms-out-0:
+          destination: notification-sent
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
